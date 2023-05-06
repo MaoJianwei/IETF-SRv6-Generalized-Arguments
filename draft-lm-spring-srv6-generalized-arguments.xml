@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-lm-spring-srv6-generalized-arguments-00"
+<rfc category="std" docName="draft-lm-spring-srv6-generalized-arguments-01"
      ipr="trust200902">
   <front>
     <title abbrev="Generalized Arguments">Generalized Arguments of SRv6
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="11" month="July" year="2022"/>
+    <date day="6" month="May" year="2023"/>
 
     <abstract>
       <t>This document analyzes the challenges of Arguments of SRv6 SID, and
@@ -129,8 +129,7 @@
 
       <t>In addition, some new features are created, including network
       slicing<xref target="I-D.ietf-6man-enhanced-vpn-vtn-id"/>, IOAM<xref
-      target="RFC9197"/>, Alternate Marking<xref
-      target="I-D.ietf-6man-ipv6-alt-mark"/><xref
+      target="RFC9197"/>, Alternate Marking<xref target="RFC9343"/><xref
       target="I-D.fz-spring-srv6-alt-mark"/>, APN6<xref
       target="I-D.li-apn-ipv6-encap"/><xref target="I-D.li-apn-header"/>,
       DetNet<xref target="I-D.pthubert-detnet-ipv6-hbh"/>, etc.</t>
@@ -346,7 +345,7 @@ S09. }
 
       <?rfc include="reference.RFC.8754"?>
 
-      <?rfc include='reference.I-D.ietf-6man-ipv6-alt-mark'?>
+      <?rfc include="reference.RFC.9343"?>
 
       <?rfc include='reference.I-D.fz-spring-srv6-alt-mark'?>
 
