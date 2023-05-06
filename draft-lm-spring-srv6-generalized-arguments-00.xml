@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-lm-spring-srv6-generalized-arguments-00"
+     ipr="trust200902">
+  <front>
+    <title abbrev="Generalized Arguments">Generalized Arguments of SRv6
+    Segment</title>
+
+    <author fullname="Zhenbin Li" initials="Z. " surname="Li">
+      <organization>Huawei Technologies</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city>Beijing</city>
+
+          <code>100095</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>lizhenbin@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Jianwei Mao" initials="J. " surname="Mao">
+      <organization>Huawei Technologies</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city>Beijing</city>
+
+          <code>100095</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>MaoJianwei@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Cheng Li" initials="C. " surname="Li">
+      <organization>Huawei Technologies</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city>Beijing</city>
+
+          <region/>
+
+          <code>100095</code>
+
+          <country>China</country>
+        </postal>
+
+        <phone/>
+
+        <facsimile/>
+
+        <email>c.l@huawei.com</email>
+
+        <uri/>
+      </address>
+    </author>
+
+    <date day="11" month="July" year="2022"/>
+
+    <abstract>
+      <t>This document analyzes the challenges of Arguments of SRv6 SID, and
+      the chance of using Arguments of SRv6 SID to reduce the length of the
+      IPv6 extension header. According to these analysis, this document
+      specifies a kind of generalized and structured Arguments for SRv6 SID,
+      which can carry multiple Arguments parts for a SRv6 SID.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>This document analyzes the challenges of the Arguments of SRv6 SID,
+      and the chance of using Arguments of SRv6 SID to reduce the length of
+      the IPv6 extension header. According to these analysis, this document
+      specifies a kind of generalized and structured arguments for SRv6 SID,
+      which can carry multiple Arguments parts for a SRv6 SID.</t>
+    </section>
+
+    <section title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in BCP 14
+      <xref target="RFC2119">RFC 2119</xref> <xref target="RFC8174">RFC
+      8174</xref> when, and only when, they appear in all capitals, as shown
+      here.</t>
+    </section>
+
+    <section title="Terminologies">
+      <t>SRv6: Segment Routing over IPv6</t>
+    </section>
+
+    <section title="Problem Statement and Requirements">
+      <t>With the development of SRv6, several kinds of SRv6 Arguments for the
+      SRv6 End SID and End.X SID emerge<xref
+      target="I-D.ietf-spring-srv6-srh-compression"/>, including:</t>
+
+      <t>1. SRv6 C-SID compression (NEXT Flavor): using Arguments to carry
+      multiple C-SIDs.</t>
+
+      <t>2. SRv6 C-SID compression (REPLACE Flavor): using Arguments to carry
+      the CL field.</t>
+
+      <t>3. SRv6 C-SID compression (NEXT &amp; REPLACE Flavor): using
+      Arguments to carry multiple C-SIDs and the CL field.</t>
+
+      <t/>
+
+      <t>In addition, some new features are created, including network
+      slicing<xref target="I-D.ietf-6man-enhanced-vpn-vtn-id"/>, IOAM<xref
+      target="RFC9197"/>, Alternate Marking<xref
+      target="I-D.ietf-6man-ipv6-alt-mark"/><xref
+      target="I-D.fz-spring-srv6-alt-mark"/>, APN6<xref
+      target="I-D.li-apn-ipv6-encap"/><xref target="I-D.li-apn-header"/>,
+      DetNet<xref target="I-D.pthubert-detnet-ipv6-hbh"/>, etc.</t>
+
+      <t>The instructions of these new features can be processed at:</t>
+
+      <t>1. All nodes along a SR path: the instructions can be carried in the
+      IPv6 Hop-by-Hop Options header (HBH).</t>
+
+      <t>2. Endpoints of an SR path: the ones can be carried in the IPv6
+      Destination Options Header (DOH) or the SRH TLV.</t>
+
+      <t/>
+
+      <t>In the second scenario, especially the second one, the usages of the
+      options or TLVs will cause the following two issues:</t>
+
+      <t>1. Lengthening the packet header, and reducing the transmission
+      efficiency.</t>
+
+      <t>2. Making the forwarding processing complex, affecting forwarding
+      performance.</t>
+
+      <t>Besides these issues, in the SRv6 C-SID compression (NEXT Flavor)
+      solution, if all the C-SIDs of the SID list which should have been
+      encapsulated in the SRH can be put in the IPv6 destination address of
+      the packet, because there is no SRH or DOH before SRH any more after the
+      compression there will be no space for the instructions which should
+      have been encapsulated in the IPv6 SRH or Destination Options Header
+      before SRH.</t>
+
+      <t/>
+
+      <t>In order to address these challenges, a feasible solution is to use
+      the Arguments of the SRv6 SID to carry those instructions. Using SRv6
+      Arguments to do that will bring following benefits:</t>
+
+      <t>1. Reducing the needed space of IPv6 extension header or SRH TLV, so
+      as to reduce the transmission overhead.</t>
+
+      <t>2. SRv6 SID can reside in the IPv6 destination address field, so the
+      SRv6 Arguments can be read and processed as a part of IPv6 address, from
+      which the forwarding performance will benefit, because it avoids to
+      process the extension header or SRv6 TLV behind the IPv6 header.</t>
+
+      <t>3. Unify and simplify the processing: the instructions of both the
+      SRv6 and the new features are all put in the Arguments part of SRv6 SID
+      or IPv6 address.</t>
+
+      <t/>
+    </section>
+
+    <section title="Generalized Arguments">
+      <t>In order to carry the instructions of multiple features in the SRv6
+      Arguments, this section defines two methods to make the SRv6 Arguments
+      generalized and structured to allocate spaces for the instructions.</t>
+
+      <section title="Method A">
+        <t>Network devices are configured a template for the purpose of
+        parsing the SRv6 Arguments, and the devices read and process the
+        content of the Arguments according to the template.</t>
+
+        <t>The template defines what features are carried, and which bits they
+        are used.</t>
+
+        <t>For example, if the length of the Arguments is z bits and the
+        number x, y, and z have the relationship 0&lt;x&lt;y&lt;z, then the
+        template can define that:</t>
+
+        <t>* The [0, x) bits carry the instructions of feature A;</t>
+
+        <t>* The [x, y) bits carry the instructions of feature B;</t>
+
+        <t>* The [y, z) bits carry the instructions of feature C.</t>
+      </section>
+
+      <section title="Method B">
+        <t>Define a bitmap in the Arguments, and each bit in the bitmap
+        indicates whether the instructions of a specific feature exist. The
+        correspondence of the bit and the feature, the length of the space of
+        Arguments to carry the instructions for the feature, and the
+        instructions needed to be carried for a specific feature can be
+        defined further in a standardization way.</t>
+
+        <t>The bitmap can be encoded from the most significant bit (MSB) or
+        the least significant bit (LSB).</t>
+
+        <t><figure align="left">
+            <artwork><![CDATA[MSB:
+    0               
+    0 1 2 3 4 5 6 7 ...
+   +-+-+-+-+-+------------------------------------
+   |A|B|C|D|E|  the instructions of feature A~E
+   +-+-+-+-+-+------------------------------------
+
+LSB:
+   ------------------------------------+-+-+-+-+-+
+      the instructions of feature A~E  |A|B|C|D|E|
+   ------------------------------------+-+-+-+-+-+
+
+]]></artwork>
+          </figure></t>
+
+        <t>When the bit is set (1), it indicates the instructions of the
+        feature exist. If the bit is reset (0), there can be two options:</t>
+
+        <t>Option 1: it indicates the instructions of the feature don't
+        exist.</t>
+
+        <t>Option 2: it indicates the instructions of the feature exist but is
+        invalid.</t>
+      </section>
+
+      <section title="Consideration of SRv6 C-SID Compression">
+        <t>Since it is required to shift the C-SID in the SRv6 SID while
+        applying the NEXT or NEXT &amp; REPLACE behavior for SRv6 C-SID
+        compression, when method A or B is adopted, when C-SIDs are encoded in
+        the generalized Arguments of the SRv6 SID which is used as the IPv6
+        destination address, these C-SIDs MUST be placed from the most
+        significant bit (MSB), that is, these C-SIDs MUST immediately
+        following the LOC:FUNCT part of the SRv6 SID.</t>
+
+        <t/>
+
+        <t><figure align="left">
+            <artwork><![CDATA[MSB:
+    0               
+    0 1 2 3 4 5 6 7 ...
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+------------------------------------
+   |C-SID1 |C-SID2 |C-SIDn |A|B|C|D|E|  the instructions of feature A~E
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+------------------------------------
+
+LSB:
+   +-+-+-+-+-+-+-+-+-+-+-+-+-----------------------------------+-+-+-+-+-+
+   |C-SID1 |C-SID2 |C-SIDn |  the instructions of feature A~E  |A|B|C|D|E|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-----------------------------------+-+-+-+-+-+
+
+]]></artwork>
+          </figure></t>
+
+        <t>The remaining part of the generalized Arguments following the
+        C-SIDs SHOULD NOT be shifted when C-SIDs part is shifted. This means
+        the position of the remaining part after the C-SIDs in the generalized
+        arguments SHOULD be fixed.</t>
+      </section>
+    </section>
+
+    <section title="Flavor for Generalized Arguments">
+      <t>This section defines a new flavor to support processing the
+      Generalized Arguments, named as Structured Arguments flavor.</t>
+
+      <t>The pseudocode of the Structured Arguments flavor is as follows:</t>
+
+      <t/>
+
+      <t><figure align="left">
+          <artwork><![CDATA[Method A:
+S01. If (some NEXT-C-SIDs are encoded in the Generalized Arguments) {
+S02.     Left shift the C-SIDs by the length of one C-SID
+S03. }
+S04. Load the relative template
+S05. Parse the Generalized Arguments as per section 4.1
+S06. For each parsed feature {
+S07.     Perform actions according to the parsed instructions
+         as per the specifications of that feature
+S08. }
+
+Method B:
+S01. If (some NEXT-C-SIDs are encoded in the Generalized Arguments) {
+S02.     Left shift the C-SIDs by the length of one C-SID
+S03. }
+S04. For each bit in the bitmap {
+S05.     If (the bit == 1) {
+S06.         Parse the instructions of the feature from the Generalized
+             Arguments as per section 4.2
+S07.         Perform actions according to the parsed instructions
+             as per the specifications of that feature
+S08.     }
+S09. }
+
+]]></artwork>
+        </figure></t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>TBD</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>TBD</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119"?>
+
+      <?rfc include="reference.RFC.8126"?>
+
+      <?rfc include='reference.RFC.8174'?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.RFC.3272"?>
+
+      <?rfc include='reference.I-D.ietf-spring-srv6-srh-compression'?>
+
+      <?rfc include='reference.I-D.ietf-6man-enhanced-vpn-vtn-id'?>
+
+      <?rfc include="reference.RFC.9197"?>
+
+      <?rfc include="reference.RFC.8986"?>
+
+      <?rfc include="reference.RFC.8754"?>
+
+      <?rfc include='reference.I-D.ietf-6man-ipv6-alt-mark'?>
+
+      <?rfc include='reference.I-D.fz-spring-srv6-alt-mark'?>
+
+      <?rfc include='reference.I-D.li-apn-header'?>
+
+      <?rfc include='reference.I-D.li-apn-ipv6-encap'?>
+
+      <?rfc include='reference.I-D.pthubert-detnet-ipv6-hbh'?>
+    </references>
+  </back>
+</rfc>
