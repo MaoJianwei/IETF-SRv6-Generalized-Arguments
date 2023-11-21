@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-lm-spring-srv6-generalized-arguments-01"
+<rfc category="std" docName="draft-lm-spring-srv6-generalized-arguments-02"
      ipr="trust200902">
   <front>
     <title abbrev="Generalized Arguments">Generalized Arguments of SRv6
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="6" month="May" year="2023"/>
+    <date day="21" month="November" year="2023"/>
 
     <abstract>
       <t>This document analyzes the challenges of Arguments of SRv6 SID, and
